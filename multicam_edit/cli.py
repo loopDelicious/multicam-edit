@@ -130,7 +130,7 @@ def run(
         fps=fps,
     )
     out_edl = project_dir / "output.edl"
-    build_edl(cutlist=cutlist, reference_name=reference_path.stem, output_path=out_edl, fps=fps)
+    build_edl(cutlist=cutlist, reference_path=reference_path, output_path=out_edl, fps=fps)
     console.print(f"[green]Done.[/green]")
     console.print(f"  XML: [bold]{out_xml}[/bold]")
     console.print(f"  EDL: [bold]{out_edl}[/bold]")
