@@ -290,6 +290,45 @@ For long or complex edits (e.g. 50 minutes of raw → one 10‑minute cut, or th
 
 The script stays the single source of truth for transcribing, syncing, and building EDL/XML; the **conversation** is only for deciding *what* goes into the cut list. You can mix: use the CLI outline for quick tweaks, or use the AI for complex, high-level edits.
 
+## Batch transcribe (for cataloging / LLM upload)
+
+Have a folder of videos you want to transcribe and catalog by topic? Use the batch transcriber — it transcribes every file individually and produces a single `transcripts.md` ready to upload to Claude (or any LLM).
+
+```bash
+python -m multicam_edit.batch_transcribe /path/to/your/videos
+```
+
+This will:
+
+1. Find all media files (`.mp4`, `.mov`, `.mkv`, etc.) in the directory.
+2. Transcribe each one with faster-whisper → individual `.srt` files.
+3. Write a combined **`transcripts.md`** with plain-text transcripts labeled by filename.
+
+Upload `transcripts.md` to Claude and ask it to catalog the videos by topic, summarize each, or whatever you need.
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `directory` | Folder containing your video files. |
+| `--output-dir DIR` | Write `.srt` files and `transcripts.md` here (default: same as input). |
+| `--model tiny\|base\|small\|medium\|large-v3` | Whisper model (default: `base`). Larger = slower but more accurate. |
+| `--language LANG` | Language hint (e.g. `en`). Default: auto-detect. |
+| `--srt-only` | Include full SRT (with timestamps) in `transcripts.md` instead of plain text. |
+
+### Examples
+
+```bash
+# Transcribe 20 MP4s in ~/Videos/Lectures, output to same folder
+python -m multicam_edit.batch_transcribe ~/Videos/Lectures
+
+# Use a better model and write output to a separate folder
+python -m multicam_edit.batch_transcribe ~/Videos/Lectures --model medium --output-dir ~/Desktop/transcripts
+
+# Keep timestamps in the combined file
+python -m multicam_edit.batch_transcribe ~/Videos/Lectures --srt-only
+```
+
 ## Notes
 
 - **Clearest audio** is chosen by a simple loudness + SNR-style score; reorder files or use `--sources` to force a specific reference.
